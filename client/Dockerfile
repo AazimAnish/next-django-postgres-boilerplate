@@ -1,16 +1,20 @@
-# Use Node.js image
 FROM node:24-slim
 
-# Set working directory
+# Install Rust for lightningcss
+RUN apt-get update && apt-get install -y curl build-essential \
+  && curl https://sh.rustup.rs -sSf | sh -s -- -y \
+  && . "$HOME/.cargo/env"
+
 WORKDIR /app
 
-# Install dependencies
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN npm install --legacy-peer-deps --include=optional
 
-# Copy rest of the app
 COPY . .
 
-# Expose port and run
+# Make entrypoint executable
+RUN chmod +x docker-entrypoint.sh
+
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+
+ENV NODE_ENV=development

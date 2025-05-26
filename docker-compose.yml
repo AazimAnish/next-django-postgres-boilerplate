@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:15
+    platform: linux/arm64
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -11,6 +12,7 @@ services:
       - "5432:5432"
 
   backend:
+    platform: linux/arm64
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -25,15 +27,21 @@ services:
       - .env
 
   frontend:
-    build: ./client
-    ports:
-      - "3000:3000"
+    platform: linux/arm64
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    working_dir: /app
     volumes:
       - ./client:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
     stdin_open: true
     tty: true
     depends_on:
       - backend
+    entrypoint: ["sh", "./docker-entrypoint.sh"]
 
 volumes:
   postgres_data:
