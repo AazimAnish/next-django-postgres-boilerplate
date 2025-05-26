@@ -29,14 +29,13 @@ project-root/
 ├── .env.example         # Environment variables template
 ├── .gitignore          # Git ignore rules
 └── README.md           # This documentation
+
 ```
 
 🔧 Prerequisites
 ----------------
 
 ### macOS
-
-bash
 
 ```
 # Install Homebrew (if not already installed)
@@ -50,6 +49,7 @@ brew install node
 
 # Install Python (for local development)
 brew install python@3.11
+
 ```
 
 ### Windows
@@ -60,8 +60,6 @@ brew install python@3.11
 4.  **Git**: Download from [git-scm.com](https://git-scm.com/download/win)
 
 ### Linux (Ubuntu/Debian)
-
-bash
 
 ```
 # Update package index
@@ -81,11 +79,10 @@ sudo apt-get install -y nodejs
 sudo apt install python3 python3-pip
 
 # Logout and login again for docker group changes to take effect
+
 ```
 
 ### Linux (CentOS/RHEL/Fedora)
-
-bash
 
 ```
 # Install Docker
@@ -103,6 +100,7 @@ sudo dnf install nodejs npm
 
 # Install Python
 sudo dnf install python3 python3-pip
+
 ```
 
 🚀 First Time Setup
@@ -110,19 +108,16 @@ sudo dnf install python3 python3-pip
 
 ### 1\. Clone the Repository
 
-bash
-
 ```
 # Clone the project
 git clone https://github.com/AazimAnish/next-django-postgres-boilerplate.git
 
 # Navigate to project directory
 cd next-django-postgres-boilerplate
+
 ```
 
 ### 2\. Environment Configuration
-
-bash
 
 ```
 # Copy environment template
@@ -131,11 +126,10 @@ cp .env.example .env
 # Edit environment variables (optional for development)
 # nano .env  # Linux/macOS
 # notepad .env  # Windows
+
 ```
 
 ### 3\. Build and Start Services
-
-bash
 
 ```
 # Build and start all services (first time setup)
@@ -143,6 +137,7 @@ docker-compose up --build
 
 # Alternative: Run in background (detached mode)
 docker-compose up --build -d
+
 ```
 
 This command will:
@@ -152,9 +147,15 @@ This command will:
 -   ⚛️ Build and start Next.js frontend container
 -   🌐 Set up networking between services
 
-### 4\. Initial Database Setup
+> 💡 **Note**: If you encounter frontend build issues (lightningcss errors), try:
+>
+> ```
+> docker-compose exec frontend npm install
+> docker-compose restart frontend
+>
+> ```
 
-bash
+### 4\. Initial Database Setup
 
 ```
 # Run Django migrations (creates database tables)
@@ -165,14 +166,15 @@ docker-compose exec backend python manage.py createsuperuser
 
 # Load initial data (if any fixtures exist)
 docker-compose exec backend python manage.py loaddata initial_data.json
+
 ```
 
 🌐 Access Your Application
 --------------------------
 
--   **Frontend (Next.js)**: <http://localhost:3000>
--   **Backend API (Django)**: <http://localhost:8000>
--   **Django Admin**: <http://localhost:8000/admin>
+-   **Frontend (Next.js)**: http://localhost:3000
+-   **Backend API (Django)**: http://localhost:8000
+-   **Django Admin**: http://localhost:8000/admin
 -   **Database**: localhost:5432 (accessible via database clients)
 
 📋 Daily Development Commands
@@ -180,19 +182,16 @@ docker-compose exec backend python manage.py loaddata initial_data.json
 
 ### Starting the Application
 
-bash
-
 ```
 # Start all services (after first setup)
 docker-compose up
 
 # Start in background
 docker-compose up -d
+
 ```
 
 ### Stopping the Application
-
-bash
 
 ```
 # Stop all services
@@ -200,11 +199,10 @@ docker-compose down
 
 # Stop and remove volumes (resets database)
 docker-compose down -v
+
 ```
 
 ### Viewing Logs
-
-bash
 
 ```
 # View logs from all services
@@ -214,11 +212,10 @@ docker-compose logs -f
 docker-compose logs -f backend    # Django logs
 docker-compose logs -f frontend   # Next.js logs
 docker-compose logs -f db         # PostgreSQL logs
+
 ```
 
 ### Database Operations
-
-bash
 
 ```
 # Run new migrations after model changes
@@ -230,11 +227,10 @@ docker-compose exec backend python manage.py shell
 
 # Access PostgreSQL directly
 docker-compose exec db psql -U postgres -d mydb
+
 ```
 
 ### Development Helpers
-
-bash
 
 ```
 # Install new Python packages
@@ -251,14 +247,13 @@ docker-compose restart frontend
 # Rebuild specific service
 docker-compose build backend
 docker-compose build frontend
+
 ```
 
 🔍 Local Development (Without Docker)
 -------------------------------------
 
 ### Backend Setup
-
-bash
 
 ```
 cd backend
@@ -278,11 +273,10 @@ python manage.py migrate
 
 # Start development server
 python manage.py runserver
+
 ```
 
 ### Frontend Setup
-
-bash
 
 ```
 cd frontend
@@ -292,6 +286,7 @@ npm install
 
 # Start development server
 npm run dev
+
 ```
 
 ⚠️ Troubleshooting
@@ -300,8 +295,6 @@ npm run dev
 ### Port Conflicts
 
 **PostgreSQL (Port 5432)**
-
-bash
 
 ```
 # macOS - Stop local PostgreSQL
@@ -312,11 +305,10 @@ sudo service postgresql stop
 
 # Windows - Stop PostgreSQL service via Services app
 # Or kill process: taskkill /f /im postgres.exe
+
 ```
 
 **Django (Port 8000) / Next.js (Port 3000)**
-
-bash
 
 ```
 # Find process using port
@@ -326,11 +318,10 @@ netstat -ano | findstr :8000  # Windows
 # Kill process
 kill -9 <PID>  # macOS/Linux
 taskkill /f /pid <PID>  # Windows
+
 ```
 
 ### Docker Issues
-
-bash
 
 ```
 # Reset Docker environment completely
@@ -340,11 +331,10 @@ docker system prune -a
 # Rebuild everything from scratch
 docker-compose build --no-cache
 docker-compose up
+
 ```
 
 ### Permission Issues (Linux)
-
-bash
 
 ```
 # Fix file permissions
@@ -353,6 +343,37 @@ sudo chown -R $USER:$USER .
 # Ensure Docker group membership
 sudo usermod -aG docker $USER
 # Logout and login again
+
+```
+
+### Frontend Crashes & Build Issues
+
+**lightningcss or node_modules errors** If you're seeing errors like:
+
+```
+Error: lightningcss failed to build
+Error: ENOENT: no such file or directory, open '.../node_modules/...'
+
+```
+
+This is usually due to inconsistencies between host and Docker container dependencies.
+
+**Solution:**
+
+```
+# Remove any existing node_modules on host (if any)
+rm -rf frontend/node_modules
+
+# Reinstall dependencies inside container
+docker-compose exec frontend npm install
+
+# Restart the frontend container
+docker-compose restart frontend
+
+# If issues persist, rebuild the container
+docker-compose build frontend
+docker-compose up frontend
+
 ```
 
 🛠️ Development Tips
@@ -368,8 +389,6 @@ sudo usermod -aG docker $USER
 
 Edit `.env` file for configuration:
 
-env
-
 ```
 # Database
 DATABASE_URL=postgresql://postgres:password@db:5432/mydb
@@ -380,6 +399,7 @@ SECRET_KEY=your-secret-key
 
 # Next.js
 NEXT_PUBLIC_API_URL=http://localhost:8000
+
 ```
 
 ### Adding New Services
@@ -390,8 +410,6 @@ Modify `docker-compose.yml` to add services like Redis, Celery, or Nginx.
 ------------------------
 
 ### Build Production Images
-
-bash
 
 ```
 # Build optimized production images
