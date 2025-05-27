@@ -1,9 +1,13 @@
-FROM node:24-slim
+FROM node:23-alpine
 
-# Install Rust for lightningcss
-RUN apt-get update && apt-get install -y curl build-essential \
-  && curl https://sh.rustup.rs -sSf | sh -s -- -y \
-  && . "$HOME/.cargo/env"
+# Install build dependencies for Alpine and Rust
+RUN apk update && apk add --no-cache \
+    curl \
+    build-base \
+    musl-dev \
+  && curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal \
+  && . "$HOME/.cargo/env" \
+  && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
 WORKDIR /app
 
