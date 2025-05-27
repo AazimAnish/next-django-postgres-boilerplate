@@ -41,7 +41,24 @@ services:
     tty: true
     depends_on:
       - backend
-    entrypoint: ["sh", "./docker-entrypoint.sh"]
+    entrypoint: [ "sh", "/app/docker-entrypoint.sh" ]
+
+  pgadmin:
+    image: dpage/pgadmin4
+    platform: linux/arm64
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+    ports:
+      - "5050:80"
+    volumes:
+      - ./server/generate_servers.sh:/docker-entrypoint-initdb.d/generate_servers.sh
+    depends_on:
+      - db
 
 volumes:
   postgres_data:

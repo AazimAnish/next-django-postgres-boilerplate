@@ -9,6 +9,7 @@ A complete full-stack application boilerplate with modern technologies and Docke
 -   **Frontend**: [Next.js](https://nextjs.org/) - React framework with server-side rendering
 -   **Backend**: [Django](https://www.djangoproject.com/) - Python web framework with REST API
 -   **Database**: [PostgreSQL](https://www.postgresql.org/) - Robust relational database
+-   **Database Admin**: [pgAdmin](https://www.pgadmin.org/) - Web-based PostgreSQL administration tool
 -   **Containerization**: Docker & Docker Compose - Consistent development environment
 
 📁 Project Structure
@@ -145,6 +146,7 @@ This command will:
 -   🐘 Start PostgreSQL database container
 -   🐍 Build and start Django backend container
 -   ⚛️ Build and start Next.js frontend container
+-   🛠️ Start pgAdmin container for database administration
 -   🌐 Set up networking between services
 
 > 💡 **Note**: If you encounter frontend build issues (lightningcss errors), try:
@@ -175,15 +177,34 @@ docker-compose exec backend python manage.py loaddata initial_data.json
 -   **Frontend (Next.js)**: http://localhost:3000
 -   **Backend API (Django)**: http://localhost:8000
 -   **Django Admin**: http://localhost:8000/admin
+-   **pgAdmin**: http://localhost:5050
 -   **Database**: localhost:5432 (accessible via database clients)
 
 📋 Daily Development Commands
 -----------------------------
 
+### When to Use Build vs Up
+
+**Use `docker-compose up --build` when:**
+- First time setup
+- Added new npm packages to `package.json`
+- Added new Python packages to `requirements.txt`
+- Modified Dockerfile configurations
+- Added new environment variables that affect build process
+
+**Use `docker-compose up` when:**
+- Just starting existing containers
+- Added new pages/components (no new dependencies)
+- Made code changes that don't require new packages
+- Regular daily development startup
+
 ### Starting the Application
 
 ```
-# Start all services (after first setup)
+# First time or after adding new packages
+docker-compose up --build
+
+# Regular startup (after first setup)
 docker-compose up
 
 # Start in background
@@ -212,6 +233,7 @@ docker-compose logs -f
 docker-compose logs -f backend    # Django logs
 docker-compose logs -f frontend   # Next.js logs
 docker-compose logs -f db         # PostgreSQL logs
+docker-compose logs -f pgadmin    # pgAdmin logs
 
 ```
 
@@ -233,21 +255,63 @@ docker-compose exec db psql -U postgres -d mydb
 ### Development Helpers
 
 ```
-# Install new Python packages
+# Install new Python packages (requires rebuild)
 docker-compose exec backend pip install package-name
-# Then add to requirements.txt
+# Then add to requirements.txt and run:
+docker-compose up --build backend
 
-# Install new Node.js packages
+# Install new Node.js packages (requires rebuild)
 docker-compose exec frontend npm install package-name
+# Then run:
+docker-compose up --build frontend
 
-# Restart specific service after changes
+# Restart specific service after code changes (no new packages)
 docker-compose restart backend
 docker-compose restart frontend
 
-# Rebuild specific service
+# Rebuild specific service after adding packages
 docker-compose build backend
 docker-compose build frontend
 
+```
+
+### Common Development Workflows
+
+**Adding a new Django model:**
+```
+# 1. Create/modify models in Django
+# 2. Generate migration
+docker-compose exec backend python manage.py makemigrations
+
+# 3. Apply migration
+docker-compose exec backend python manage.py migrate
+
+# 4. No rebuild needed - just restart if needed
+docker-compose restart backend
+```
+
+**Adding a new Next.js page/component:**
+```
+# 1. Create new pages/components
+# 2. No rebuild needed - hot reload handles it automatically
+# 3. Only restart if experiencing issues
+docker-compose restart frontend
+```
+
+**Adding new Python package:**
+```
+# 1. Add to requirements.txt
+# 2. Rebuild backend container
+docker-compose up --build backend
+```
+
+**Adding new npm package:**
+```
+# 1. Add to package.json or install directly
+docker-compose exec frontend npm install package-name
+
+# 2. Rebuild frontend container
+docker-compose up --build frontend
 ```
 
 🔍 Local Development (Without Docker)
@@ -292,6 +356,50 @@ npm run dev
 ⚠️ Troubleshooting
 ------------------
 
+### Common Issues & Solutions
+
+**Container won't start after adding packages:**
+```
+# Solution: Rebuild the container
+docker-compose up --build [service-name]
+
+# Or rebuild all containers
+docker-compose up --build
+```
+
+**Database migration errors:**
+```
+# Check if database is running
+docker-compose ps
+
+# Reset migrations (WARNING: destroys data)
+docker-compose exec backend python manage.py migrate --fake-initial
+
+# Or reset entire database
+docker-compose down -v
+docker-compose up -d
+```
+
+**"Port already in use" errors:**
+```
+# Check what's using the port
+lsof -i :3000  # Replace with your port
+netstat -ano | findstr :3000  # Windows
+
+# Kill the process or change port in docker-compose.yml
+```
+
+**Code changes not reflecting:**
+```
+# For Django (no hot reload by default)
+docker-compose restart backend
+
+# For Next.js (should auto-reload, if not)
+docker-compose restart frontend
+
+# Check if volumes are properly mounted in docker-compose.yml
+```
+
 ### Port Conflicts
 
 **PostgreSQL (Port 5432)**
@@ -308,7 +416,7 @@ sudo service postgresql stop
 
 ```
 
-**Django (Port 8000) / Next.js (Port 3000)**
+**Django (Port 8000) / Next.js (Port 3000) / pgAdmin (Port 5050)**
 
 ```
 # Find process using port
@@ -400,7 +508,6 @@ SECRET_KEY=your-secret-key
 # Next.js
 NEXT_PUBLIC_API_URL=http://localhost:8000
 
-```
 
 ### Adding New Services
 
