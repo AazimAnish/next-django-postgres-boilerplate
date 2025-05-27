@@ -41,7 +41,8 @@ services:
     tty: true
     depends_on:
       - backend
-    entrypoint: [ "sh", "/app/docker-entrypoint.sh" ]
+    env_file:
+      - .env
 
   pgadmin:
     image: dpage/pgadmin4

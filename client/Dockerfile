@@ -1,6 +1,6 @@
 FROM node:23-alpine
 
-# Install build dependencies for Alpine and Rust
+# Install system dependencies
 RUN apk update && apk add --no-cache \
     curl \
     build-base \
@@ -16,9 +16,11 @@ RUN npm install --legacy-peer-deps --include=optional
 
 COPY . .
 
-# Make entrypoint executable
-RUN chmod +x docker-entrypoint.sh
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 3000
-
 ENV NODE_ENV=development
+
+ENTRYPOINT [ "docker-entrypoint.sh" ]
+CMD ["npm", "run", "dev"]

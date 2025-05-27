@@ -104,6 +104,68 @@ sudo dnf install python3 python3-pip
 
 ```
 
+🚀 How to Run the Project
+-------------------------
+
+* Running with Docker Compose (all services)
+* Running frontend standalone
+* Running backend standalone
+
+### 🧩 1. **Run All Services with Docker Compose**
+
+```bash
+docker compose up --build
+```
+
+This starts:
+* PostgreSQL (`db`)
+* Django backend (`backend`)
+* Next.js frontend (`frontend`)
+* pgAdmin (`pgadmin`) 
+
+with live reload, environment variables, and proper linking.
+
+### 🌐 2. **Run Frontend Standalone**
+
+📦 Build the image:
+
+```bash
+docker build -t my-frontend ./client
+```
+
+▶️ Run it with live reload:
+
+```bash
+docker run --rm -it \
+  -v "$PWD/client":/app \
+  -v /app/node_modules \
+  -p 3000:3000 \
+  --env-file .env \
+  my-frontend \
+  sh -c "npm install && npm run dev"
+```
+
+### 🖥️ 3. **Run Backend Standalone**
+
+📦 Build the image:
+
+```bash
+docker build -t my-backend ./server
+```
+
+▶️ Run it:
+
+```bash
+docker run --rm -it \
+  -v "$PWD/server":/app \
+  -p 8000:8000 \
+  --env-file .env \
+  my-backend \
+  sh -c "python manage.py runserver 0.0.0.0:8000"
+```
+
+⚠️ Ensure PostgreSQL is running separately (via Compose or container) when using the backend.
+
 🚀 First Time Setup
 -------------------
 
