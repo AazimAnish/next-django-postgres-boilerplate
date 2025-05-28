@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    platform: linux/arm64
+    platform: linux/arm64/v4
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -14,7 +14,7 @@ services:
       - "5432:5432"
 
   backend:
-    platform: linux/arm64
+    platform: linux/arm64/v4
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -29,7 +29,7 @@ services:
       - .env
 
   frontend:
-    platform: linux/arm64
+    platform: linux/arm64/v4
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -48,7 +48,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    platform: linux/arm64
+    platform: linux/arm64/v4
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
