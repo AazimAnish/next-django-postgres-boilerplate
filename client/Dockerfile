@@ -1,13 +1,16 @@
-FROM node:20-bookworm-slim
+FROM node:23-alpine
 
 # Install system dependencies
 RUN apk update && apk add --no-cache \
     curl \
     build-base \
-    musl-dev \
+    python3 \
+    g++ \
+    make \
+    git \
   && curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal \
-  && . "$HOME/.cargo/env" \
-  && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+  && source "$HOME/.cargo/env" \
+  && rm -rf /var/cache/apk/* /tmp/*
 
 WORKDIR /app
 
