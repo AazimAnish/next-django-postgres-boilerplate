@@ -1,7 +1,10 @@
 #!/bin/sh
 
-echo "🔧 Rebuilding native modules (lightningcss)..."
-npm rebuild lightningcss || true
+echo "Installing dependencies..."
+npm install --legacy-peer-deps --include=optional
 
-echo "🚀 Starting dev server..."
-exec "$@"
+echo "Rebuilding native modules (lightningcss)..."
+npm rebuild lightningcss
+
+echo "Starting dev server..."
+exec npm run dev

@@ -22,5 +22,5 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 EXPOSE 3000
 ENV NODE_ENV=development
 
-ENTRYPOINT [ "docker-entrypoint.sh" ]
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["npm", "run", "dev"]

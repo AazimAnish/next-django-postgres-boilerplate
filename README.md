@@ -6,10 +6,10 @@ A complete full-stack application boilerplate with modern technologies and Docke
 🛠️ Tech Stack
 --------------
 
--   **Frontend**: [Next.js](https://nextjs.org/) - React framework with server-side rendering
--   **Backend**: [Django](https://www.djangoproject.com/) - Python web framework with REST API
--   **Database**: [PostgreSQL](https://www.postgresql.org/) - Robust relational database
--   **Database Admin**: [pgAdmin](https://www.pgadmin.org/) - Web-based PostgreSQL administration tool
+-   **Frontend**: Next.js - React framework with server-side rendering
+-   **Backend**: Django - Python web framework with REST API
+-   **Database**: PostgreSQL - Robust relational database
+-   **Database Admin**: pgAdmin - Web-based PostgreSQL administration tool
 -   **Containerization**: Docker & Docker Compose - Consistent development environment
 
 📁 Project Structure
@@ -55,10 +55,10 @@ brew install python@3.11
 
 ### Windows
 
-1.  **Docker Desktop**: Download from [Docker Desktop for Windows](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe)
-2.  **Node.js**: Download from [nodejs.org](https://nodejs.org/en/download/)
-3.  **Python**: Download from [python.org](https://www.python.org/downloads/windows/)
-4.  **Git**: Download from [git-scm.com](https://git-scm.com/download/win)
+-   **Docker Desktop**: Download from [Docker Desktop for Windows](https://docs.docker.com/desktop/windows/install/)
+-   **Node.js**: Download from [nodejs.org](https://nodejs.org/)
+-   **Python**: Download from [python.org](https://python.org/)
+-   **Git**: Download from [git-scm.com](https://git-scm.com/)
 
 ### Linux (Ubuntu/Debian)
 
@@ -107,64 +107,70 @@ sudo dnf install python3 python3-pip
 🚀 How to Run the Project
 -------------------------
 
-* Running with Docker Compose (all services)
-* Running frontend standalone
-* Running backend standalone
+-   [Running with Docker Compose (all services)](https://claude.ai/chat/420844ac-0658-4b59-9e1b-56e80c34e0bd#-1-run-all-services-with-docker-compose)
+-   [Running frontend standalone](https://claude.ai/chat/420844ac-0658-4b59-9e1b-56e80c34e0bd#-2-run-frontend-standalone)
+-   [Running backend standalone](https://claude.ai/chat/420844ac-0658-4b59-9e1b-56e80c34e0bd#%EF%B8%8F-3-run-backend-standalone)
 
-### 🧩 1. **Run All Services with Docker Compose**
+### 🧩 1. Run All Services with Docker Compose
 
-```bash
+```
 docker compose up --build
+
 ```
 
 This starts:
-* PostgreSQL (`db`)
-* Django backend (`backend`)
-* Next.js frontend (`frontend`)
-* pgAdmin (`pgadmin`) 
+
+-   PostgreSQL (db)
+-   Django backend (backend)
+-   Next.js frontend (frontend)
+-   pgAdmin (pgadmin)
 
 with live reload, environment variables, and proper linking.
 
-### 🌐 2. **Run Frontend Standalone**
+### 🌐 2. Run Frontend Standalone
 
-📦 Build the image:
+📦 **Build the image:**
 
-```bash
-docker build -t my-frontend ./client
+```
+docker build -t my-frontend ./frontend
+
 ```
 
-▶️ Run it with live reload:
+▶️ **Run it with live reload:**
 
-```bash
-docker run --rm -it \
-  -v "$PWD/client":/app \
-  -v /app/node_modules \
-  -p 3000:3000 \
-  --env-file .env \
-  my-frontend \
+```
+docker run --rm -it\
+  -v "$PWD/frontend":/app\
+  -v /app/node_modules\
+  -p 3000:3000\
+  --env-file .env\
+  my-frontend\
   sh -c "npm install && npm run dev"
+
 ```
 
-### 🖥️ 3. **Run Backend Standalone**
+### 🖥️ 3. Run Backend Standalone
 
-📦 Build the image:
+📦 **Build the image:**
 
-```bash
-docker build -t my-backend ./server
+```
+docker build -t my-backend ./backend
+
 ```
 
-▶️ Run it:
+▶️ **Run it:**
 
-```bash
-docker run --rm -it \
-  -v "$PWD/server":/app \
-  -p 8000:8000 \
-  --env-file .env \
-  my-backend \
+```
+docker run --rm -it\
+  -v "$PWD/backend":/app\
+  -p 8000:8000\
+  --env-file .env\
+  my-backend\
   sh -c "python manage.py runserver 0.0.0.0:8000"
+
 ```
 
-⚠️ Ensure PostgreSQL is running separately (via Compose or container) when using the backend.
+⚠️ **Ensure PostgreSQL is running separately (via Compose or container) when using the backend.**
 
 🚀 First Time Setup
 -------------------
@@ -211,13 +217,13 @@ This command will:
 -   🛠️ Start pgAdmin container for database administration
 -   🌐 Set up networking between services
 
-> 💡 **Note**: If you encounter frontend build issues (lightningcss errors), try:
->
-> ```
-> docker-compose exec frontend npm install
-> docker-compose restart frontend
->
-> ```
+💡 **Note**: If you encounter frontend build issues (e.g., lightningcss errors), try:
+
+```
+docker-compose exec frontend npm install
+docker-compose restart frontend
+
+```
 
 ### 4\. Initial Database Setup
 
@@ -248,17 +254,19 @@ docker-compose exec backend python manage.py loaddata initial_data.json
 ### When to Use Build vs Up
 
 **Use `docker-compose up --build` when:**
-- First time setup
-- Added new npm packages to `package.json`
-- Added new Python packages to `requirements.txt`
-- Modified Dockerfile configurations
-- Added new environment variables that affect build process
+
+-   First time setup
+-   Added new npm packages to package.json
+-   Added new Python packages to requirements.txt
+-   Modified Dockerfile configurations
+-   Added new environment variables that affect build process
 
 **Use `docker-compose up` when:**
-- Just starting existing containers
-- Added new pages/components (no new dependencies)
-- Made code changes that don't require new packages
-- Regular daily development startup
+
+-   Just starting existing containers
+-   Added new pages/components (no new dependencies)
+-   Made code changes that don't require new packages
+-   Regular daily development startup
 
 ### Starting the Application
 
@@ -340,6 +348,7 @@ docker-compose build frontend
 ### Common Development Workflows
 
 **Adding a new Django model:**
+
 ```
 # 1. Create/modify models in Django
 # 2. Generate migration
@@ -350,30 +359,37 @@ docker-compose exec backend python manage.py migrate
 
 # 4. No rebuild needed - just restart if needed
 docker-compose restart backend
+
 ```
 
 **Adding a new Next.js page/component:**
+
 ```
 # 1. Create new pages/components
 # 2. No rebuild needed - hot reload handles it automatically
 # 3. Only restart if experiencing issues
 docker-compose restart frontend
+
 ```
 
-**Adding new Python package:**
+**Adding a new Python package:**
+
 ```
 # 1. Add to requirements.txt
 # 2. Rebuild backend container
 docker-compose up --build backend
+
 ```
 
-**Adding new npm package:**
+**Adding a new npm package:**
+
 ```
 # 1. Add to package.json or install directly
 docker-compose exec frontend npm install package-name
 
 # 2. Rebuild frontend container
 docker-compose up --build frontend
+
 ```
 
 🔍 Local Development (Without Docker)
@@ -389,7 +405,7 @@ python -m venv venv
 
 # Activate virtual environment
 source venv/bin/activate  # macOS/Linux
-# venv\Scripts\activate   # Windows
+venv\Scripts\activate     # Windows
 
 # Install dependencies
 pip install -r requirements.txt
@@ -415,21 +431,83 @@ npm run dev
 
 ```
 
+☁️ EC2 Setup (AWS Deployment)
+-----------------------------
+
+### Prerequisites
+
+-   AWS EC2 instance (e.g., Ubuntu 20.04)
+-   SSH access to the instance
+-   Security group allowing ports: 3000 (Next.js), 8000 (Django), 5050 (pgAdmin), 5432 (PostgreSQL)
+
+### Steps
+
+1.  **SSH into EC2 Instance**
+
+```
+ssh -i your-key.pem ubuntu@your-ec2-public-ip
+
+```
+
+1.  **Install Dependencies**
+
+```
+sudo apt update
+sudo apt install docker.io docker-compose git -y
+sudo usermod -aG docker $USER
+# Logout and log back in
+
+```
+
+1.  **Clone Repository**
+
+```
+git clone https://github.com/AazimAnish/next-django-postgres-boilerplate.git
+cd next-django-postgres-boilerplate
+
+```
+
+1.  **Configure Environment**
+
+```
+cp .env.example .env
+nano .env  # Update with production values (e.g., DATABASE_URL, SECRET_KEY)
+
+```
+
+1.  **Run Application**
+
+```
+docker-compose up --build -d
+
+```
+
+1.  **Access Application**
+
+-   Frontend: http://<ec2-public-ip>:3000
+-   Backend API: http://<ec2-public-ip>:8000
+-   pgAdmin: http://<ec2-public-ip>:5050
+
+💡 **Tip**: For production, consider using a reverse proxy (e.g., Nginx) and securing with SSL (e.g., Let's Encrypt).
+
 ⚠️ Troubleshooting
 ------------------
 
 ### Common Issues & Solutions
 
 **Container won't start after adding packages:**
+
 ```
 # Solution: Rebuild the container
 docker-compose up --build [service-name]
 
 # Or rebuild all containers
 docker-compose up --build
+
 ```
 
 **Database migration errors:**
+
 ```
 # Check if database is running
 docker-compose ps
@@ -440,18 +518,22 @@ docker-compose exec backend python manage.py migrate --fake-initial
 # Or reset entire database
 docker-compose down -v
 docker-compose up -d
+
 ```
 
 **"Port already in use" errors:**
+
 ```
 # Check what's using the port
-lsof -i :3000  # Replace with your port
+lsof -i :3000  # Replace with your port (macOS/Linux)
 netstat -ano | findstr :3000  # Windows
 
 # Kill the process or change port in docker-compose.yml
+
 ```
 
 **Code changes not reflecting:**
+
 ```
 # For Django (no hot reload by default)
 docker-compose restart backend
@@ -460,11 +542,12 @@ docker-compose restart backend
 docker-compose restart frontend
 
 # Check if volumes are properly mounted in docker-compose.yml
+
 ```
 
 ### Port Conflicts
 
-**PostgreSQL (Port 5432)**
+**PostgreSQL (Port 5432):**
 
 ```
 # macOS - Stop local PostgreSQL
@@ -478,7 +561,7 @@ sudo service postgresql stop
 
 ```
 
-**Django (Port 8000) / Next.js (Port 3000) / pgAdmin (Port 5050)**
+**Django (Port 8000) / Next.js (Port 3000) / pgAdmin (Port 5050):**
 
 ```
 # Find process using port
@@ -504,7 +587,7 @@ docker-compose up
 
 ```
 
-### Permission Issues (Linux)
+### Permission Issues (Linux/EC2)
 
 ```
 # Fix file permissions
@@ -518,15 +601,13 @@ sudo usermod -aG docker $USER
 
 ### Frontend Crashes & Build Issues
 
-**lightningcss or node_modules errors** If you're seeing errors like:
+**lightningcss or node_modules errors**: If you're seeing errors like:
 
 ```
 Error: lightningcss failed to build
 Error: ENOENT: no such file or directory, open '.../node_modules/...'
 
 ```
-
-This is usually due to inconsistencies between host and Docker container dependencies.
 
 **Solution:**
 
@@ -570,6 +651,7 @@ SECRET_KEY=your-secret-key
 # Next.js
 NEXT_PUBLIC_API_URL=http://localhost:8000
 
+```
 
 ### Adding New Services
 
@@ -586,6 +668,7 @@ docker-compose -f docker-compose.prod.yml build
 
 # Deploy to production
 docker-compose -f docker-compose.prod.yml up -d
+
 ```
 
 ### Environment Setup
@@ -607,10 +690,10 @@ docker-compose -f docker-compose.prod.yml up -d
 📄 License
 ----------
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the MIT License.
 
 🆘 Support
 ----------
 
 -   **Documentation**: Check the official docs for [Next.js](https://nextjs.org/docs), [Django](https://docs.djangoproject.com/), and [PostgreSQL](https://www.postgresql.org/docs/)
--   **Issues**: Report bugs via GitHub Issues
+-   **Issues**: Report bugs via [GitHub Issues](https://github.com/AazimAnish/next-django-postgres-boilerplate/issues)
