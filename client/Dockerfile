@@ -1,4 +1,4 @@
-FROM node:23-alpine
+FROM node:20-bookworm-slim
 
 # Install system dependencies
 RUN apk update && apk add --no-cache \

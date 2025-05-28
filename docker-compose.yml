@@ -3,7 +3,6 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    platform: linux/arm64
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -14,8 +13,6 @@ services:
       - "5432:5432"
 
   backend:
-    image: aazimanishdocker/next-django-postgres-boilerplate-backend
-    platform: linux/arm64
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -32,8 +29,6 @@ services:
       DB_HOST: ${DB_HOST}
 
   frontend:
-    image: aazimanishdocker/next-django-postgres-boilerplate-frontend
-    platform: linux/arm64
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -51,8 +46,7 @@ services:
       - .env
 
   pgadmin:
-    image: dpage/pgadmin4
-    platform: linux/arm64
+    image: dpage/pgadmin4 
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
@@ -63,8 +57,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5050:80"
-    volumes:
-      - ./server/generate_servers.sh:/docker-entrypoint-initdb.d/generate_servers.sh
     depends_on:
       - db
 
