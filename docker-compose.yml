@@ -1,41 +1,27 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
   backend:
     build:
       context: ./server
       dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./server:/app
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     env_file:
       - .env
     environment:
       DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   frontend:
     build:
       context: ./client
       dockerfile: Dockerfile
     working_dir: /app
-    volumes:
-      - ./client:/app
-      - /app/node_modules
     ports:
       - "3000:3000"
     stdin_open: true
@@ -44,21 +30,3 @@ services:
       - backend
     env_file:
       - .env
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5050:80"
-    depends_on:
-      - db
-
-volumes:
-  postgres_data:
